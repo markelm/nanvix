@@ -63,16 +63,17 @@ void bubbleSort(char* arr[], int n)
 
 void split_line(char* output[], char* input, int n){
 	int line_break = 0;
+	int count = 0;
 	for (int i = 0; i < n; i++){
 		if(input[i] == '\n')
 			line_break++;
 	}
-	output = malloc(sizeof(char*)*(line_break + 1))
+	output = malloc(sizeof(char*)*(line_break + 1));
 	int j = 0;
 	int line = 0;
 	for(int i = 0; i < n; i++){
 		if(input[i] == '\n'){
-			int count = i - j + 1;
+			count = i - j + 1;
 			line++;
 			output[line] = malloc(sizeof(char)*(count + 1));
 			j = i + 1;
@@ -92,6 +93,8 @@ static void sort(char *filename)
 	char buf[BUFSIZ]; /* Buffer.                 */
 	ssize_t n, nread; /* Bytes actually read.    */
 	ssize_t nwritten; /* Bytes actually written. */
+
+	char* Out[BUFSIZ];
 	
 	fd = open(filename, O_RDONLY);
 	
@@ -113,12 +116,14 @@ static void sort(char *filename)
 		
 		n = nread;
 
-		bubbleSort(buf, n);
+		split_line(Out, &buf, n);
+
+		bubbleSort(Out, n);
 		
 		off = 0;
 		do
 		{
-			nwritten = write(fileno(stdout), &buf[off], nread);
+			nwritten = write(fileno(stdout), &Out[off], nread);
 			
 			/* Failed to write. */
 			if (nwritten < 0)
